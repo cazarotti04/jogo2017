@@ -11,6 +11,7 @@ public class PlayerControllerFINAL : MonoBehaviour {
     private Animator anim;
     private Rigidbody rb;
     private AudioSource audioSource;
+
     private bool pulando = false;
 
     void Start() {
@@ -19,21 +20,19 @@ public class PlayerControllerFINAL : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
     }
 
+
     void Update() {
-        if (GameController.instancia.estado == Estado.Jogando || GameController.instancia.estado == Estado.AguardandoComecar) {
+        if (GameController.instancia.estado == Estado.Jogando) {
             if (Input.GetMouseButtonDown(0)) {
                 anim.Play("pulando");
                 audioSource.PlayOneShot(somPulo);
                 rb.useGravity = true;
                 pulando = true;
-                if (GameController.instancia.estado == Estado.AguardandoComecar) {
-                    GameController.instancia.PlayerComecou();
-                }
             }
         }
     }
 
-    void FixedUpdate() {
+    private void FixedUpdate() {
         if (GameController.instancia.estado == Estado.Jogando) {
             if (pulando) {
                 pulando = false;
@@ -54,5 +53,4 @@ public class PlayerControllerFINAL : MonoBehaviour {
             }
         }
     }
-
 }

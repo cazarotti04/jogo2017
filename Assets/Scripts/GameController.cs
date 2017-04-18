@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
@@ -10,9 +11,13 @@ public class GameController : MonoBehaviour {
     public float espera;
     public float tempoDestruicao;
     public GameObject menu;
-    public GameObject canvas;
+    public GameObject PanelMenu;
 
     public static GameController instancia = null;
+
+    public Text txtPontos;
+    private int pontos;
+
     private void Awake() {
         if (instancia == null) {
             instancia = this;
@@ -40,13 +45,23 @@ public class GameController : MonoBehaviour {
     public void PlayerComecou() {
         estado = Estado.Jogando;
         menu.SetActive(false);
-        canvas.SetActive(false);
+        PanelMenu.SetActive(false);
+        atualizarPontos(0);
         StartCoroutine(GerarObstaculos());
     }
 
 
     public void PlayerMorreu() {
         estado = Estado.GameOver;
-    } 
+    }
+
+    private void atualizarPontos(int x) {
+        pontos = x;
+        txtPontos.text = "" + x;
+    }
+
+    public void acrescentarPontos(int x) {
+        atualizarPontos(pontos + x);
+    }
 		
 }
