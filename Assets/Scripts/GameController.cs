@@ -12,10 +12,14 @@ public class GameController : MonoBehaviour {
     public float tempoDestruicao;
     public GameObject menu;
     public GameObject PanelMenu;
+    public GameObject gameOverPanel;
+    public GameObject pontosPanel;
 
     public static GameController instancia = null;
 
     public Text txtPontos;
+    public Text MPT;
+
     private int pontos;
 
     private void Awake() {
@@ -30,6 +34,11 @@ public class GameController : MonoBehaviour {
 
     void Start () {
         estado = Estado.AguardandoComecar;
+        PlayerPrefs.SetInt("HighScore", 0);
+        menu.SetActive(true);
+        PanelMenu.SetActive(true);
+        gameOverPanel.SetActive(false);
+        pontosPanel.SetActive(false);
 	}
 	
 
@@ -46,6 +55,7 @@ public class GameController : MonoBehaviour {
         estado = Estado.Jogando;
         menu.SetActive(false);
         PanelMenu.SetActive(false);
+        pontosPanel.SetActive(true);
         atualizarPontos(0);
         StartCoroutine(GerarObstaculos());
     }
@@ -53,6 +63,12 @@ public class GameController : MonoBehaviour {
 
     public void PlayerMorreu() {
         estado = Estado.GameOver;
+        if (pontos > PlayerPrefs.GetInt("HighScore"))
+        {
+            PlayerPrefs.SetInt("HighScore", pontos);
+            MPT.text = "" + pontos;
+        }
+        gameOverPanel.SetActive(true);
     }
 
     private void atualizarPontos(int x) {
@@ -62,6 +78,16 @@ public class GameController : MonoBehaviour {
 
     public void acrescentarPontos(int x) {
         atualizarPontos(pontos + x);
+    }
+
+    public void PlayerVoltou()
+    {
+        estado = Estado.AguardandoComecar;
+        menu.SetActive(true);
+        PanelMenu.SetActive(true);
+        gameOverPanel.SetActive(false);
+        pontosPanel.SetActive(false);
+        GameObject.Find("Nave").GetComponent<PlayerControllerFINAL>().recomecar();
     }
 		
 }
