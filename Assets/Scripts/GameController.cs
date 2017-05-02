@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour {
     public Text MPT;
 
     private int pontos;
+    private List<GameObject> obstaculos;
 
     private void Awake() {
         if (instancia == null) {
@@ -33,6 +34,7 @@ public class GameController : MonoBehaviour {
     }
 
     void Start () {
+        obstaculos = new List<GameObject>();
         estado = Estado.AguardandoComecar;
         PlayerPrefs.SetInt("HighScore", 0);
         menu.SetActive(true);
@@ -46,7 +48,8 @@ public class GameController : MonoBehaviour {
         while (GameController.instancia.estado == Estado.Jogando) {
             Vector3 pos = new Vector3(4.3f, Random.Range(-3f, 3f), 3.13f);
             GameObject obj = Instantiate(obstaculo, pos, Quaternion.identity) as GameObject;
-            Destroy(obj, tempoDestruicao);
+            obstaculos.Add(obj);
+            StartCoroutine(DestruirObstaculo(obj));
             yield return new WaitForSeconds(espera);
         }
     }
@@ -82,12 +85,29 @@ public class GameController : MonoBehaviour {
 
     public void PlayerVoltou()
     {
+        while(obstaculos.Count > 0)
+        {
+            GameObject obj = obstaculos[0];
+            if (obstaculos.Remove(obj))
+            {
+                Destroy(obj);
+            }
+        }
         estado = Estado.AguardandoComecar;
         menu.SetActive(true);
         PanelMenu.SetActive(true);
         gameOverPanel.SetActive(false);
         pontosPanel.SetActive(false);
         GameObject.Find("Nave").GetComponent<PlayerControllerFINAL>().recomecar();
+    }
+
+    IEnumerator DestruirObstaculo(GameObject obj)
+    {
+        yield return new WaitForSeconds(tempoDestruicao);
+        if (obstaculos.Remove(obj))
+        {
+            Destroy(obj);
+        }
     }
 		
 }
